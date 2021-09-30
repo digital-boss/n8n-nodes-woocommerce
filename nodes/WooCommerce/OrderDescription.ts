@@ -444,6 +444,9 @@ export const orderFields = [
 				operation: [
 					'create',
 				],
+				jsonParameterLineItems: [
+					false,
+				],
 			},
 		},
 		description: 'Line item data',
@@ -537,6 +540,43 @@ export const orderFields = [
 				],
 			},
 		],
+	},
+	{
+		displayName: 'Line Items',
+		name: 'lineItemsJson',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: [
+					'order',
+				],
+				operation: [
+					'create',
+				],
+				jsonParameterLineItems: [
+					true,
+				],
+			},
+		},
+		default: '',
+		description: 'Line Items as JSON (flat object).',
+	},
+	{
+		displayName: 'JSON Parameter Line Items',
+		name: 'jsonParameterLineItems',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: [
+					'order',
+				],
+				operation: [
+					'create',
+				],
+			},
+		},
+		default: false,
+		description: 'If the Line Items parameter should be set via the value-key pair UI or JSON.',
 	},
 	{
 		displayName: 'Metadata',
@@ -1150,6 +1190,9 @@ export const orderFields = [
 				operation: [
 					'update',
 				],
+				jsonParameterLineItems: [
+					false,
+				],
 			},
 		},
 		description: 'Line item data',
@@ -1243,6 +1286,43 @@ export const orderFields = [
 				],
 			},
 		],
+	},
+	{
+		displayName: 'Line Items',
+		name: 'lineItemsJson',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: [
+					'order',
+				],
+				operation: [
+					'update',
+				],
+				jsonParameterLineItems: [
+					true,
+				],
+			},
+		},
+		default: '',
+		description: 'Line Items as JSON (flat object).',
+	},
+	{
+		displayName: 'JSON Parameter Line Items',
+		name: 'jsonParameterLineItems',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: [
+					'order',
+				],
+				operation: [
+					'update',
+				],
+			},
+		},
+		default: false,
+		description: 'If the Line Items parameter should be set via the value-key pair UI or JSON.',
 	},
 	{
 		displayName: 'Metadata',

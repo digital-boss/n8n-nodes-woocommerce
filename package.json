@@ -1,16 +1,16 @@
 {
-    "name": "n8n-nodes-woocommerce",
+    "name": "@digital-boss/n8n-nodes-woocommerce",
     "version": "0.1.0",
     "description": "Example starter module for custom n8n nodes.",
     "license": "SEE LICENSE IN LICENSE.md",
     "homepage": "https://n8n.io",
     "author": {
-        "name": "",
-        "email": ""
+        "name": "Valentina Lilova",
+        "email": "valentina.lilova@digital-boss.de"
     },
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/valentina98/n8n-nodes-woocommerce.git"
     },
     "main": "index.js",
     "scripts": {

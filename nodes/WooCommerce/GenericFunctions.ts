@@ -174,3 +174,30 @@ type Metadata = {
 		meta_data_fields: Array<{ key: string; value: string }>;
 	}
 };
+
+export function validateJSON(json: string | undefined): any { // tslint:disable-line:no-any
+	let result;
+	try {
+		result = JSON.parse(json!);
+	} catch (exception) {
+		result = undefined;
+	}
+	return result;
+}
+
+/**
+ * Creates an object from an array with names values
+ *
+ * @export
+ * @param Array<{key:string,value:string}> data
+ * @returns IDataObject
+ */
+export function parseNameValueArray(data: Array<{name:string,value:string}>): IDataObject {
+	const jsonData: IDataObject = {};
+	for (let i = 0; i < data.length; i++) {
+		if (data[i].name && data[i].value) {
+			jsonData[data[i].name] = data[i].value;
+		}
+	}
+	return jsonData;
+}
