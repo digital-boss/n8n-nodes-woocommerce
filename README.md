@@ -17,7 +17,7 @@ npm init --yes
 
 npm install n8n
 
-npm install n8n-nodes-dnc-eloqua
+npm install @digital-boss/n8n-nodes-woocommerce
 ```
 
 # Start n8n
@@ -49,4 +49,4 @@ Special thanks to [N8n nodemation](https://n8n.io) workflow automation by Jan Ob
 
 Nodes by [digital-north-consulting.com](https://digital-north-consulting.com). For productive use and consulting on this, [contact us please](mailto:info@digital-north-consulting.com).
 
-This node was programmed with ❤️ by Valentina Lilova [valentina98](https://github.com/valentina98)
+This node was updated with ❤️ by Valentina Lilova [valentina98](https://github.com/valentina98)
