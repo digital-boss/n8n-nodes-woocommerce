@@ -7,7 +7,8 @@ import {
 	INodeExecutionData,
 	INodePropertyOptions,
 	INodeType,
-	INodeTypeDescription, NodeApiError, NodeOperationError,
+	INodeTypeDescription,
+	NodeOperationError,
 } from 'n8n-workflow';
 import {
 	adjustMetadata,
@@ -464,6 +465,7 @@ export class WooCommerce implements INodeType {
 						if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
+								body.line_items = lineItems;
 							} else {
 								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
 							}
@@ -488,7 +490,7 @@ export class WooCommerce implements INodeType {
 						setMetadata(shippingLines);
 						toSnakeCase(shippingLines);
 					}
-					responseData = await woocommerceApiRequest.call(this, 'POST', '/orders', body);
+					responseData = await woocommerceApiRequest.call(this, 'POST', '/orders', body, undefined);
 				}
 				if (operation === 'update') {
 
@@ -557,6 +559,7 @@ export class WooCommerce implements INodeType {
 						if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
+								body.line_items = lineItems;
 							} else {
 								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
 							}
@@ -661,8 +664,7 @@ export class WooCommerce implements INodeType {
 				// **********************************************************************
 
 				let method = '';
-				let resourcePath = this.getNodeParameter('resourcePath', i) as string;
-				let id = '';
+				const path = this.getNodeParameter('resourcePath', i) as string;
 				let body:IDataObject = {};
 				let qs:IDataObject = {};
 
@@ -733,9 +735,6 @@ export class WooCommerce implements INodeType {
 						body = parseNameValueArray(bodyParameters);
 					}
 
-					id = this.getNodeParameter('id', i) as string;
-					resourcePath += `/${id}`;
-
 				} else if (operation === 'get') {
 
 					// ----------------------------------------
@@ -743,8 +742,6 @@ export class WooCommerce implements INodeType {
 					// ----------------------------------------
 
 					method = 'GET';
-					id = this.getNodeParameter('id', i) as string;
-					resourcePath += `/${id}`;
 
 				} else if (operation === 'getAll') {
 
@@ -777,10 +774,8 @@ export class WooCommerce implements INodeType {
 					// ----------------------------------------
 
 					method = 'DELETE';
-					id = this.getNodeParameter('id', i) as string;
-					resourcePath = `${resourcePath}/${id}`;
 				}
-				responseData = await woocommerceApiRequest.call(this, method, resourcePath, body, qs);
+				responseData = await woocommerceApiRequest.call(this, method, '', body, qs, undefined, undefined, path);
 			}
 
 			if (Array.isArray(responseData)) {

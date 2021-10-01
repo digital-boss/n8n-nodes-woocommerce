@@ -244,24 +244,6 @@ export const customFields = [
 		description: 'The path to the custom resource after the domain name',
 	},
 	{
-		displayName: 'ID',
-		name: 'id',
-		type: 'string',
-		required: true,
-		displayOptions: {
-			show: {
-				resource: [
-					'custom',
-				],
-				operation: [
-					'update',
-				],
-			},
-		},
-		default: '',
-		description: 'The id of the resource to get',
-	},
-	{
 		displayName: 'JSON Parameters',
 		name: 'jsonParameters',
 		type: 'boolean',
@@ -437,24 +419,7 @@ export const customFields = [
 		default: '',
 		description: 'The path to the custom resource after the domain name',
 	},
-	{
-		displayName: 'ID',
-		name: 'id',
-		type: 'string',
-		required: true,
-		displayOptions: {
-			show: {
-				resource: [
-					'custom',
-				],
-				operation: [
-					'get',
-				],
-			},
-		},
-		default: '',
-		description: 'The id of the resource to get',
-	},
+
 /* -------------------------------------------------------------------------- */
 /*              				 custom:delete						    		*/
 /* -------------------------------------------------------------------------- */
@@ -476,24 +441,7 @@ export const customFields = [
 		default: '',
 		description: 'The path to the custom resource after the domain name',
 	},
-	{
-		displayName: 'ID',
-		name: 'id',
-		type: 'string',
-		required: true,
-		displayOptions: {
-			show: {
-				resource: [
-					'custom',
-				],
-				operation: [
-					'delete',
-				],
-			},
-		},
-		default: '',
-		description: 'The id of the resource to delete',
-	},
+
 /* -------------------------------------------------------------------------- */
 /*              				 custom:getAll   				 				*/
 /* -------------------------------------------------------------------------- */
