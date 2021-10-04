@@ -54,7 +54,7 @@ export class WooCommerce implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'WooCommerce',
 		name: 'wooCommerce',
-		// icon: 'file:wooCommerce.svg',
+		icon: 'file:wooCommerce.svg',
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -462,7 +462,12 @@ export class WooCommerce implements INodeType {
 					let lineItems: ILineItem[] = [];
 					if (jsonParameterLineItems) {
 						const lineItemsJson = this.getNodeParameter('lineItemsJson', i) as string;
-						if (lineItemsJson !== '') {
+						// if input is array
+						if(Array.isArray(lineItemsJson)){
+							body.line_items = lineItemsJson;
+						}
+						// if input is not empty string
+						else if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
 								body.line_items = lineItems;
@@ -490,7 +495,7 @@ export class WooCommerce implements INodeType {
 						setMetadata(shippingLines);
 						toSnakeCase(shippingLines);
 					}
-					responseData = await woocommerceApiRequest.call(this, 'POST', '/orders', body, undefined);
+					responseData = await woocommerceApiRequest.call(this, 'POST', '/orders', body);
 				}
 				if (operation === 'update') {
 
@@ -556,7 +561,12 @@ export class WooCommerce implements INodeType {
 					let lineItems: ILineItem[] = [];
 					if (jsonParameterLineItems) {
 						const lineItemsJson = this.getNodeParameter('lineItemsJson', i) as string;
-						if (lineItemsJson !== '') {
+						// if input is array
+						if(Array.isArray(lineItemsJson)){
+							body.line_items = lineItemsJson;
+						}
+						// if input is not empty string
+						else if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
 								body.line_items = lineItems;
