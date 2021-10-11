@@ -22,11 +22,11 @@ import {
 import {
 	productFields,
 	productOperations,
-} from './ProductDescription';
+} from './descriptions/ProductDescription';
 import {
 	orderFields,
 	orderOperations,
-} from './OrderDescription';
+} from './descriptions/OrderDescription';
 import {
 	IDimension,
 	IImage,
@@ -48,7 +48,7 @@ import {
 import {
 	customFields,
 	customOperations,
-} from './CustomDescription';
+} from './descriptions/CustomDescription';
 
 export class WooCommerce implements INodeType {
 	description: INodeTypeDescription = {
@@ -58,7 +58,7 @@ export class WooCommerce implements INodeType {
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Consume WooCommerce API',
+		description: "Consume WooCommerce API (Digital Boss' package)",
 		defaults: {
 			name: 'WooCommerce',
 			color: '#96588a',
