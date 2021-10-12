@@ -22,11 +22,11 @@ import {
 import {
 	productFields,
 	productOperations,
-} from './descriptions/ProductDescription';
+} from './descriptions';
 import {
 	orderFields,
 	orderOperations,
-} from './descriptions/OrderDescription';
+} from './descriptions';
 import {
 	IDimension,
 	IImage,
@@ -48,7 +48,7 @@ import {
 import {
 	customFields,
 	customOperations,
-} from './descriptions/CustomDescription';
+} from './descriptions';
 
 export class WooCommerce implements INodeType {
 	description: INodeTypeDescription = {
@@ -397,7 +397,7 @@ export class WooCommerce implements INodeType {
 					if (options.type) {
 						qs.type = options.type as string;
 					}
-					if (returnAll === true) {
+					if (returnAll) {
 						responseData = await woocommerceApiRequestAllItems.call(this, 'GET', '/products', {}, qs);
 					} else {
 						qs.per_page = this.getNodeParameter('limit', i) as number;
@@ -445,19 +445,59 @@ export class WooCommerce implements INodeType {
 						body.shipping = shipping;
 						toSnakeCase(shipping as IDataObject);
 					}
-					const couponLines = (this.getNodeParameter('couponLinesUi', i) as IDataObject).couponLinesValues as ICouponLine[];
-					if (couponLines) {
-						body.coupon_lines = couponLines;
-						setMetadata(couponLines);
-						toSnakeCase(couponLines);
-					}
-					const feeLines = (this.getNodeParameter('feeLinesUi', i) as IDataObject).feeLinesValues as IFeeLine[];
-					if (feeLines) {
-						body.fee_lines = feeLines;
-						setMetadata(feeLines);
-						toSnakeCase(feeLines);
-					}
 
+					const jsonParameterCouponLines = (this.getNodeParameter('jsonParameterCouponLines', i) as boolean);
+					let couponLines: ICouponLine[] = [];
+					if (jsonParameterCouponLines) {
+						const couponLinesJson = this.getNodeParameter('couponLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(couponLinesJson)){
+							couponLines = couponLinesJson;
+							body.coupon_lines = couponLines;
+						}
+						// if input is string and not empty
+						else if (couponLinesJson !== '') {
+							if (validateJSON(couponLinesJson) !== undefined) {
+								Object.assign(couponLines, JSON.parse(couponLinesJson));
+								body.coupon_lines = couponLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						couponLines = (this.getNodeParameter('couponLinesUi', i) as IDataObject).couponLinesValues as ICouponLine[];
+						if (couponLines) {
+							body.coupon_lines = couponLines;
+							setMetadata(couponLines);
+							toSnakeCase(couponLines);
+						}
+					}
+					const jsonParameterFeeLines = (this.getNodeParameter('jsonParameterFeeLines', i) as boolean);
+					let feeLines: IFeeLine[] = [];
+					if (jsonParameterFeeLines) {
+						const feeLinesJson = this.getNodeParameter('feeLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(feeLinesJson)){
+							feeLines = feeLinesJson;
+							body.fee_lines = feeLines;
+						}
+						// if input is string and not empty
+						else if (feeLinesJson !== '') {
+							if (validateJSON(feeLinesJson) !== undefined) {
+								Object.assign(feeLines, JSON.parse(feeLinesJson));
+								body.fee_lines = feeLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						feeLines = (this.getNodeParameter('feeLinesUi', i) as IDataObject).feeLinesValues as IFeeLine[];
+						if (feeLines) {
+							body.fee_lines = feeLines;
+							setMetadata(feeLines);
+							toSnakeCase(feeLines);
+						}
+					}
 					const jsonParameterLineItems = (this.getNodeParameter('jsonParameterLineItems', i) as boolean);
 					let lineItems: ILineItem[] = [];
 					if (jsonParameterLineItems) {
@@ -466,7 +506,7 @@ export class WooCommerce implements INodeType {
 						if(Array.isArray(lineItemsJson)){
 							body.line_items = lineItemsJson;
 						}
-						// if input is not empty string
+						// if input is string and not empty
 						else if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
@@ -481,19 +521,56 @@ export class WooCommerce implements INodeType {
 							body.line_items = lineItems;
 							setMetadata(lineItems);
 							toSnakeCase(lineItems);
-							//@ts-ignore
 						}
 					}
-
-					const metadata = (this.getNodeParameter('metadataUi', i) as IDataObject).metadataValues as IDataObject[];
-					if (metadata) {
-						body.meta_data = metadata;
+					const jsonParameterMetadata = (this.getNodeParameter('jsonParameterMetadata', i) as boolean);
+					let metadata: IDataObject[] = [];
+					if (jsonParameterMetadata) {
+						const metadataJson = this.getNodeParameter('metadataJson', i) as string;
+						// if input is array
+						if(Array.isArray(metadataJson)){
+							metadata = metadataJson;
+							body.meta_data = metadata;
+						}
+						// if input is string and not empty
+						else if (metadataJson !== '') {
+							if (validateJSON(metadataJson) !== undefined) {
+								Object.assign(metadata, JSON.parse(metadataJson));
+								body.meta_data = metadata;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						metadata = (this.getNodeParameter('metadataUi', i) as IDataObject).metadataValues as IDataObject[];
+						if (metadata) {
+							body.meta_data = metadata;
+						}
 					}
-					const shippingLines = (this.getNodeParameter('shippingLinesUi', i) as IDataObject).shippingLinesValues as IShoppingLine[];
-					if (shippingLines) {
-						body.shipping_lines = shippingLines;
-						setMetadata(shippingLines);
-						toSnakeCase(shippingLines);
+					const jsonParameterShippingLines = (this.getNodeParameter('jsonParameterShippingLines', i) as boolean);
+					let shippingLines: IShoppingLine[] = [];
+					if (jsonParameterShippingLines) {
+						const shippingLinesJson = this.getNodeParameter('shippingLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(shippingLinesJson)){
+							body.shipping_lines = shippingLinesJson;
+						}
+						// if input is string and not empty
+						else if (shippingLinesJson !== '') {
+							if (validateJSON(shippingLinesJson) !== undefined) {
+								Object.assign(shippingLines, JSON.parse(shippingLinesJson));
+								body.shipping_lines = shippingLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						shippingLines = (this.getNodeParameter('shippingLinesUi', i) as IDataObject).shippingLinesValues as IShoppingLine[];
+						if (shippingLines) {
+							body.shipping_lines = shippingLines;
+							setMetadata(shippingLines);
+							toSnakeCase(shippingLines);
+						}
 					}
 					responseData = await woocommerceApiRequest.call(this, 'POST', '/orders', body);
 				}
@@ -544,19 +621,59 @@ export class WooCommerce implements INodeType {
 						body.shipping = shipping;
 						toSnakeCase(shipping as IDataObject);
 					}
-					const couponLines = (this.getNodeParameter('couponLinesUi', i) as IDataObject).couponLinesValues as ICouponLine[];
-					if (couponLines) {
-						body.coupon_lines = couponLines;
-						setMetadata(couponLines);
-						toSnakeCase(couponLines);
-					}
-					const feeLines = (this.getNodeParameter('feeLinesUi', i) as IDataObject).feeLinesValues as IFeeLine[];
-					if (feeLines) {
-						body.fee_lines = feeLines;
-						setMetadata(feeLines);
-						toSnakeCase(feeLines);
-					}
 
+					const jsonParameterCouponLines = (this.getNodeParameter('jsonParameterCouponLines', i) as boolean);
+					let couponLines: ICouponLine[] = [];
+					if (jsonParameterCouponLines) {
+						const couponLinesJson = this.getNodeParameter('couponLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(couponLinesJson)){
+							couponLines = couponLinesJson;
+							body.coupon_lines = couponLines;
+						}
+						// if input is string and not empty
+						else if (couponLinesJson !== '') {
+							if (validateJSON(couponLinesJson) !== undefined) {
+								Object.assign(couponLines, JSON.parse(couponLinesJson));
+								body.coupon_lines = couponLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						couponLines = (this.getNodeParameter('couponLinesUi', i) as IDataObject).couponLinesValues as ICouponLine[];
+						if (couponLines) {
+							body.coupon_lines = couponLines;
+							setMetadata(couponLines);
+							toSnakeCase(couponLines);
+						}
+					}
+					const jsonParameterFeeLines = (this.getNodeParameter('jsonParameterFeeLines', i) as boolean);
+					let feeLines: IFeeLine[] = [];
+					if (jsonParameterFeeLines) {
+						const feeLinesJson = this.getNodeParameter('feeLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(feeLinesJson)){
+							feeLines = feeLinesJson;
+							body.fee_lines = feeLines;
+						}
+						// if input is string and not empty
+						else if (feeLinesJson !== '') {
+							if (validateJSON(feeLinesJson) !== undefined) {
+								Object.assign(feeLines, JSON.parse(feeLinesJson));
+								body.fee_lines = feeLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						feeLines = (this.getNodeParameter('feeLinesUi', i) as IDataObject).feeLinesValues as IFeeLine[];
+						if (feeLines) {
+							body.fee_lines = feeLines;
+							setMetadata(feeLines);
+							toSnakeCase(feeLines);
+						}
+					}
 					const jsonParameterLineItems = (this.getNodeParameter('jsonParameterLineItems', i) as boolean);
 					let lineItems: ILineItem[] = [];
 					if (jsonParameterLineItems) {
@@ -565,7 +682,7 @@ export class WooCommerce implements INodeType {
 						if(Array.isArray(lineItemsJson)){
 							body.line_items = lineItemsJson;
 						}
-						// if input is not empty string
+						// if input is string and not empty
 						else if (lineItemsJson !== '') {
 							if (validateJSON(lineItemsJson) !== undefined) {
 								Object.assign(lineItems, JSON.parse(lineItemsJson));
@@ -580,21 +697,57 @@ export class WooCommerce implements INodeType {
 							body.line_items = lineItems;
 							setMetadata(lineItems);
 							toSnakeCase(lineItems);
-							//@ts-ignore
 						}
 					}
-
-					const metadata = (this.getNodeParameter('metadataUi', i) as IDataObject).metadataValues as IDataObject[];
-					if (metadata) {
-						body.meta_data = metadata;
+					const jsonParameterMetadata = (this.getNodeParameter('jsonParameterMetadata', i) as boolean);
+					let metadata: IDataObject[] = [];
+					if (jsonParameterMetadata) {
+						const metadataJson = this.getNodeParameter('metadataJson', i) as string;
+						// if input is array
+						if(Array.isArray(metadataJson)){
+							metadata = metadataJson;
+							body.meta_data = metadata;
+						}
+						// if input is string and not empty
+						else if (metadataJson !== '') {
+							if (validateJSON(metadataJson) !== undefined) {
+								Object.assign(metadata, JSON.parse(metadataJson));
+								body.meta_data = metadata;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						metadata = (this.getNodeParameter('metadataUi', i) as IDataObject).metadataValues as IDataObject[];
+						if (metadata) {
+							body.meta_data = metadata;
+						}
 					}
-					const shippingLines = (this.getNodeParameter('shippingLinesUi', i) as IDataObject).shippingLinesValues as IShoppingLine[];
-					if (shippingLines) {
-						body.shipping_lines = shippingLines;
-						setMetadata(shippingLines);
-						toSnakeCase(shippingLines);
+					const jsonParameterShippingLines = (this.getNodeParameter('jsonParameterShippingLines', i) as boolean);
+					let shippingLines: IShoppingLine[] = [];
+					if (jsonParameterShippingLines) {
+						const shippingLinesJson = this.getNodeParameter('shippingLinesJson', i) as string;
+						// if input is array
+						if(Array.isArray(shippingLinesJson)){
+							body.shipping_lines = shippingLinesJson;
+						}
+						// if input is string and not empty
+						else if (shippingLinesJson !== '') {
+							if (validateJSON(shippingLinesJson) !== undefined) {
+								Object.assign(shippingLines, JSON.parse(shippingLinesJson));
+								body.shipping_lines = shippingLines;
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Query Parameters must be a valid JSON');
+							}
+						}
+					} else {
+						shippingLines = (this.getNodeParameter('shippingLinesUi', i) as IDataObject).shippingLinesValues as IShoppingLine[];
+						if (shippingLines) {
+							body.shipping_lines = shippingLines;
+							setMetadata(shippingLines);
+							toSnakeCase(shippingLines);
+						}
 					}
-
 					responseData = await woocommerceApiRequest.call(this, 'PUT', `/orders/${orderId}`, body);
 				}
 				if (operation === 'get') {
@@ -648,7 +801,7 @@ export class WooCommerce implements INodeType {
 					if (options.status) {
 						qs.status = options.status as string;
 					}
-					if (returnAll === true) {
+					if (returnAll) {
 						responseData = await woocommerceApiRequestAllItems.call(this, 'GET', '/orders', {}, qs);
 					} else {
 						qs.per_page = this.getNodeParameter('limit', i) as number;
