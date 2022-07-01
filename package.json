@@ -2,7 +2,7 @@
     "name": "@digital-boss/n8n-nodes-woocommerce",
     "version": "0.1.8",
     "description": "Example starter module for custom n8n nodes.",
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "MIT",
     "homepage": "https://n8n.io",
     "author": {
         "name": "Valentina Lilova",
